@@ -7,29 +7,37 @@
     <title>Puzzel</title>
   </head>
   <style>
+    .placePieces {
+      background-color: rgb(133, 202, 133);
+    }
+    .hide {
+      display: none;
+    }
     .container {
       display: grid;
-      background-color: rgb(245, 208, 242);
+      background-color: rgba(215, 250, 191, 0.699);
       /*            width :564px;*/
     }
     .dropzone {
       outline: 0.5px solid rgb(90, 24, 49);
     }
-    #draggable {
-      width: 100px;
-      height: 100px;
-      text-align: center;
-      background: white;
-      position: absolute;
-    }
     .piece {
       z-index: 2;
-      background-image: "totoro.jpg";
+      background-repeat: no-repeat;
+      position: absolute;
+    }
+    .piece:hover {
+      box-shadow: 5px 5px 20px 5px #000;
+      cursor: grab;
+    }
+    .piece:active {
+      cursor: grabbing;
     }
   </style>
-  <body>
+  <body class="placePieces">
     <div id="container" class="container"></div>
     <img src="" alt="" />
+    <div class="pieces"></div>
   </body>
   <script>
     const imagePath = "totoro.jpg";
@@ -42,6 +50,7 @@
 
     function loadTheImage() {
       document.querySelector("img").src = imagePath;
+      document.querySelector("img").classList.add("hide");
       document.querySelector("img").onload = makeContainer;
     }
 
@@ -61,46 +70,79 @@
 
           dropzone.style.height = imgHeight / numOfYdropzones + "px";
 
-          dropzone.textContent = `${x}${y}`;
+          //dropzone.textContent = `${x}${y}`;
           dropzone.classList.add("dropzone");
 
           document.querySelector(".container").appendChild(dropzone);
         }
       }
-      for (let y = 0; y < numOfYdropzones; y++) {
-        for (let x = 0; x < numOfXdropzones; x++) {
+    }
+    function makePieces() {
+      for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
           let piece = document.createElement("div");
 
           piece.style.height = "141px";
           piece.style.width = "141px";
-
-          piece.textContent = `${x}${y}`;
           piece.classList.add("piece");
+          piece.id = "draggable";
+          id = true;
+          piece.style.backgroundImage = "url('totoro.jpg')";
 
-          document.querySelector("body").appendChild(piece);
+          document.querySelector(".placePieces").appendChild(piece);
+          console.log(piece);
         }
       }
-    }
-    makePices();
-    function makePices() {
-      piece = document.createElement("div");
-      piece.style.height = "141px";
-      piece.style.width = "141px";
-      console.log(piece);
-      piece.classList.add("piece");
-      for (let counter = 0; counter < 16; counter++) {}
-
-      document.querySelector("body").appendChild(piece);
+      let arr = document.querySelectorAll(".piece");
+      return arr;
     }
 
+    let arrBox = makePieces();
+    console.log(arrBox);
+
+    changeBackground();
+    function changeBackground() {
+      for (let counter = 0; counter < 4; counter++) {
+        arrBox[counter].style.backgroundPositionY = "0px";
+        arrBox[0].style.backgroundPositionX = "0px";
+        arrBox[1].style.backgroundPositionX = "-141px";
+        arrBox[2].style.backgroundPositionX = "-282px";
+        arrBox[3].style.backgroundPositionX = "-423px";
+      }
+      for (let counter = 4; counter < 8; counter++) {
+        arrBox[counter].style.backgroundPositionY = "-141px";
+        arrBox[4].style.backgroundPositionX = "0px";
+        arrBox[5].style.backgroundPositionX = "-141px";
+        arrBox[6].style.backgroundPositionX = "-282px";
+        arrBox[7].style.backgroundPositionX = "-423px";
+      }
+      for (let counter = 8; counter < 12; counter++) {
+        arrBox[counter].style.backgroundPositionY = "-282px";
+        arrBox[8].style.backgroundPositionX = "0px";
+        arrBox[9].style.backgroundPositionX = "-141px";
+        arrBox[10].style.backgroundPositionX = "-282px";
+        arrBox[11].style.backgroundPositionX = "-423px";
+      }
+      for (let counter = 12; counter < 16; counter++) {
+        arrBox[counter].style.backgroundPositionY = "-423px";
+        arrBox[12].style.backgroundPositionX = "0px";
+        arrBox[13].style.backgroundPositionX = "-141px";
+        arrBox[14].style.backgroundPositionX = "-282px";
+        arrBox[15].style.backgroundPositionX = "-423px";
+      }
+    }
+    document.querySelectorAll(".piece").forEach(eachPiece => {
+      eachPiece.style.left = `${Math.random() * 500 + 250}px`;
+    });
     dragdropzone();
     function dragdropzone() {
       document.addEventListener("drag", function(event) {});
       document.addEventListener("dragstart", function(event) {
         // store a ref. on the dragged elem
         dragged = event.target;
+        console.log(event.target);
         // make it half transparent
-        event.target.style.opacity = 0.5;
+        event.target.style.opacity = 0.7;
       });
       document.addEventListener("dragend", function(event) {
         // reset the transparency
@@ -121,7 +163,7 @@
           event.target.appendChild(dragged);
           dragged.style.left = event.target.style.left;
           dragged.style.top = event.target.style.top;
-        } else if (event.target.className == "container") {
+        } else if (event.target.className == "placePieces") {
           // park the dragged elem somewhere on the body
           dragged.style.left = event.pageX + "px";
           dragged.style.top = event.pageY + "px";
